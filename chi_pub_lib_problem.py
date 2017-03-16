@@ -25,8 +25,6 @@ for line in reader:
 
 headers = lib_data[0]
 lib_data = lib_data[1:]
-print(lib_data)
-print(headers)
 
 total_visitors_by_month = []
 for i in range(1, len(headers) - 1):
