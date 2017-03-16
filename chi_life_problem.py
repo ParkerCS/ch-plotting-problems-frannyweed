@@ -12,22 +12,19 @@
 #8  Add a title
 #9  Add text to indicate the minimum and maximum values
 #10 Customize your graph in at least two other ways using documentation from matplotlib.org
-#11  Comment your code as always.
-
-# Note:  If you would like to present something different than the above for your graph using
-# this dataset, just let me know your intentions before you start and I will do my best to support you.
-
 
 from operator import itemgetter
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.patches as mpatches
 
-life_data = []
+plt.title("Chicago Life Expectancy")
+plt.figure(tight_layout = True, figsize = [12,5])
 file = open("chi_life_expectancy.txt","r")
 
 reader = csv.reader(file, delimiter = "\t")
-
+life_data = []
 for line in reader:
     life_data.append(line)
 
@@ -35,12 +32,12 @@ print(life_data)
 
 headers = life_data[0]
 life_data = life_data[1:]
-print(headers)
-print(life_data)
+
+#Putting the Life Expectancies in Order
 life_data.sort(key=itemgetter(8))
-print(life_data)
 
 life_expectancy = []
+life_expectancy_1990 = []
 community_list = []
 
 for i in range(len(headers)):
@@ -48,20 +45,23 @@ for i in range(len(headers)):
         for a in range(len(life_data)):
             life_expectancy.append(float(life_data[a][i]))
             community_list.append(life_data[a][1])
+    elif headers[i] == "1990 Life Expectancy":
+        for b in range(len(life_data)):
+            life_expectancy_1990.append(float(life_data[b][i]))
 
-print(community_list)
-
-#5 Use ax = plt.gca() to grab the axes object as ax. Use ax.set_xticklabels(community_list)
-# to place the labels on
-# the x axis, use the kwarg rotation=60 to tilt the lettering since there are a lot of communities
-#6  Set an appropriate plt.ylim([min,max])
-
-plt.figure(tight_layout = True, figsize = [12,5])
-
-plt.bar(np.arange(len(life_expectancy)),life_expectancy, color = "olivedrab")
+plt.bar(np.arange(len(life_expectancy)),life_expectancy, color = "darkblue")
+plt.text(len(community_list)/2 - 5,life_expectancy[len(life_expectancy) - 1], "Minimum Value: " + str(life_expectancy[0]) + "\nMaximum Value: " + str(life_expectancy[len(life_expectancy) -1]), size = 9)
 plt.xticks(np.arange(len(life_expectancy)),community_list, rotation = 90, size = 9, color = "darkgreen")
+plt.ylim([0,life_expectancy[len(life_expectancy)-1]+10])
 
+plt.subplot()
+plt.bar(np.arange(len(life_expectancy_1990)),life_expectancy_1990, color = "olivedrab")
+
+twenty_patch = mpatches.Patch(color = "darkblue", label = "2010 Life Expectancy")
+ninety_patch = mpatches.Patch(color = "olivedrab", label = "1990 Life Expectancy")
+
+plt.legend(handles = [twenty_patch, ninety_patch], shadow = True)
 plt.xlabel("Community Name")
-plt.ylabel("2010 Life Expectancy")
+plt.ylabel("Life Expectancy")
 
 plt.show()
